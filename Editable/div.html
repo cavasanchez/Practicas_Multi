@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Elemento &lt;div&gt; Editable
+        </title>
+        <script type="text/javascript">
+
+            function crearEnlace() {
+                var url = prompt("Escribe URL:", "http://");
+                if (url)
+                    document.execCommand("createlink", false, url);
+            }
+
+            function mostrarFuente() {
+                var content = document.getElementById("div").innerHTML;
+                content.replace(/</g, '&lt;');
+                content.replace(/>/g, '&gt;');
+                alert(content);
+            }
+
+            function cambiarColor() {
+                //Cogemos el valor del panel y lo guardamos en color
+                var color = document.getElementById('text-color').value;
+
+                //Convertimos a rgb el color
+                var colorRgb_r = hexToRgb(color).r;
+                var colorRgb_g = hexToRgb(color).g;
+                var colorRgb_b = hexToRgb(color).b;
+
+                //Creamos un string con la función que le queremos pasar
+                var stringRgba = "rgba(" + colorRgb_r + "," + colorRgb_g + "," + colorRgb_b + ",1)";
+                //Ejecutamos el comando foreColor que nos permite cambiar el color al elemento seleccionado
+                document.execCommand('styleWithCSS', false, true);
+                document.execCommand('foreColor', 'false', stringRgba);
+            }
+
+            function hexToRgb(hex) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            function textLeft() {
+                document.getElementById("div").setAttribute("align", "left");
+            }
+            function textCenter() {
+                document.getElementById("div").setAttribute("align", "center");
+            }
+            function textRigth() {
+                document.getElementById("div").setAttribute("align", "right");
+            }
+
+            function changeFont() {
+                var size = document.getElementById("size").value;
+                if ((size > 7) || (size < 1)) {
+                    alert("El tamaño debe estar entre 1-7");
+                    return;
+                }
+                document.execCommand("fontSize", false, size);
+            }
+            function disableCorrection() {
+                document.getElementById("div").setAttribute("spellcheck", "false");
+            }
+            function enableCorrection() {
+                document.getElementById("div").setAttribute("spellcheck", "true");
+            }
+
+
+        </script>
+    </head>
+    <body>
+        <h1>Elemento &lt;div&gt; Editable</h1>
+
+        <div style='width: 450px'>
+            <input type="button" value="Negrita"
+                   onclick="document.execCommand('bold', false, null);">
+            <input type="button" value="Italica"
+                   onclick="document.execCommand('italic', false, null);">
+            <input type="button" value="Subrayado"
+                   onclick="document.execCommand('underline', false, null);">
+            <input type="button" value="Crear Enlace" onclick="crearEnlace();">
+            <input type="button" value="Mostrar Fuente" onclick="mostrarFuente();">
+            <input type="button" value="Texto izq." onclick="textLeft()">
+            <input type="button" value="Texto centro." onclick="textCenter()">
+            <input type="button" value="Texto derecha." onclick="textRigth()">
+            <div>
+                <input type="button" value="Cambiar tamaño" onclick="changeFont()">
+                <input type="text" id="size">
+            </div>
+            <div>
+                <input type="button" value="Insertar lista no numerada" onclick="document.execCommand('insertUnorderedList', false, 'list')">
+                <input type="button" value="Insertar lista numerada" onclick="document.execCommand('insertOrderedList', false, 'list')">
+            </div>
+            <div>
+                <input type="button" value="Desactivar correccion" onclick="disableCorrection()">
+                <input type="button" value="Activar correccion" onclick="enableCorrection()">
+            </div>
+            <div>
+                <label>Elige un color para el texto: </label>
+                <input id="text-color" type="color" value="#ff0000" onchange="cambiarColor()">
+            </div>
+        </div>
+
+
+        <div id="div" style='border:solid black; height: 300px; width: 400px' 
+            contenteditable="true">     
+        </div>
+
+    </body>
+</html>
