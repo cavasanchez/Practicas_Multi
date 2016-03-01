@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            &lt;iframe&gt; Editable
+        </title>
+        <script type="text/javascript">
+            var iframe;
+            var frameDoc;
+            function cargador()
+            {
+                iframe =
+                        document.getElementById("contenido");
+                iframe.contentDocument.designMode = "on";
+                frameDoc = iframe.contentDocument ? iframe.contentDocument : iframe.contentWindow.document;
+            }
+
+            function mostrarFuente()
+            {
+                var contenido =
+                        iframe.contentDocument.body.innerHTML;
+                contenido.replace(/</g, '&lt;');
+                contenido.replace(/>/g, '&gt;');
+                alert(contenido);
+            }
+            function crearEnlace()
+            {
+                var url = prompt("Escribe URL:", "http://");
+                if (url)
+                    iframe.contentDocument.execCommand
+                            ("createlink", false, url);
+            }
+            window.addEventListener("cargador", onload,
+                    false);
+
+
+            function changeFont() {
+                var size = document.getElementById("size").value;
+                if ((size > 7) || (size < 1)) {
+                    alert("El tamaño debe estar entre 1-7");
+                    return;
+                }
+                iframe.contentDocument.execCommand("fontSize", false, size);
+            }
+
+            function textLeft() {
+                frameDoc.body.style.textAlign = "left";
+            }
+            function textCenter() {
+                frameDoc.body.style.textAlign = "center";
+            }
+            function textRigth() {
+                frameDoc.body.style.textAlign = "right";
+            }
+
+            function hola() {
+                frameDoc.body.style.backgroundColor = "red";
+            }
+
+            function cambiarColor() {
+                //Cogemos el valor del panel y lo guardamos en color
+                var color = document.getElementById('text-color').value;
+
+                //Convertimos a rgb el color
+                var colorRgb_r = hexToRgb(color).r;
+                var colorRgb_g = hexToRgb(color).g;
+                var colorRgb_b = hexToRgb(color).b;
+
+                //Creamos un string con la función que le queremos pasar
+                var stringRgba = "rgba(" + colorRgb_r + "," + colorRgb_g + "," + colorRgb_b + ",1)";
+                //Ejecutamos el comando foreColor que nos permite cambiar el color al elemento seleccionado
+                iframe.contentDocument.execCommand('styleWithCSS', false, true);
+                iframe.contentDocument.execCommand('foreColor', 'false', stringRgba);
+            }
+
+            function hexToRgb(hex) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+        </script>
+
+    </head>
+    <body onload="cargador()">
+        <h1> &lt;iframe&gt; Editable</h1>
+        <div>
+            <input type="button" value="Negrita" onclick=
+                   "iframe.contentDocument.execCommand
+                                   ('bold', false, null);">
+            <input type="button" value="Italica"
+                   onclick="iframe.contentDocument.execCommand
+                                   ('italic', false, null);">
+            <input type="button" value="Subrayado"
+                   onclick="iframe.contentDocument.execCommand
+                                   ('underline', false, null);">
+            <input type="button" value="Add Enlace"
+                   onclick="crearEnlace();">
+            <input type="button" value="Mostrar Fuente"
+                   onclick="mostrarFuente();">
+            <input type="button" value="Texto izq." onclick="textLeft()">
+            <input type="button" value="Texto centro." onclick="textCenter()">
+            <input type="button" value="Texto derecha." onclick="textRigth()">
+            <div>
+                <input type="button" value="Cambiar tamanio" onclick="changeFont()">
+            </div>
+            <input type="text" id="size">
+            <div>
+                <input type="button" value="Insertar lista no numerada" onclick="iframe.contentDocument.execCommand('insertUnorderedList', false, 'list')">
+                <input type="button" value="Insertar lista numerada" onclick="iframe.contentDocument.execCommand('insertOrderedList', false, 'list')">
+            </div>
+            <div>
+                <label>Elige un color para el texto: </label>
+                <input id="text-color" type="color" value="#ff0000" onchange="cambiarColor()">
+            </div>
+
+        </div>
+        <iframe id="contenido" style='border:solid
+                black; height: 300px; width: 400px'
+                src="about:blank">
+        </iframe>
+    </body>
+</html>
